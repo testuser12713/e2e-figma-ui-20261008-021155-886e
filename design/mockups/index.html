@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Business Handler – Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" data-od-id="sidebar">
+      <div class="app-title">
+        <span class="app-mark" aria-hidden="true">BH</span>
+        <span class="app-title-text">Business Handler</span>
+      </div>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <a class="nav-item" href="index.html" aria-current="page" data-od-id="nav-dashboard">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <rect x="2.5" y="2.5" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="11.5" y="2.5" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="2.5" y="11.5" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="11.5" y="11.5" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a class="nav-item" href="customers.html" data-od-id="nav-customers">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="7" cy="6.5" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2.5 15c0-2.2 2-4 4.5-4s4.5 1.8 4.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="14" cy="7" r="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M13.5 11c2.2 0 4 1.6 4 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span class="nav-label">Kunden</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main" data-od-id="main">
+      <header class="topbar" data-od-id="topbar">
+        <div class="page-title">
+          <h1 data-od-id="page-title">Dashboard</h1>
+          <p class="subtitle">Überblick über Umsatz, Aufträge und Kunden</p>
+        </div>
+        <div class="topbar-actions">
+          <button type="button" class="btn btn-primary btn-md" disabled data-od-id="new-order-button">
+            Neuer Auftrag
+            <span class="coming-soon">Coming soon</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="content-body">
+        <section class="kpi-grid" aria-label="Kennzahlen" data-od-id="kpi-grid">
+          <article class="card kpi-tile" data-od-id="kpi-total-revenue">
+            <div class="kpi-label">Gesamtumsatz</div>
+            <div class="kpi-value" id="kpi-revenue">—</div>
+            <div class="kpi-delta pos">▲ +12,4 %</div>
+          </article>
+          <article class="card kpi-tile" data-od-id="kpi-open-orders">
+            <div class="kpi-label">Offene Aufträge</div>
+            <div class="kpi-value" id="kpi-open">—</div>
+            <div class="kpi-delta pos">▲ +2</div>
+          </article>
+          <article class="card kpi-tile" data-od-id="kpi-active-customers">
+            <div class="kpi-label">Aktive Kunden</div>
+            <div class="kpi-value" id="kpi-active">—</div>
+            <div class="kpi-delta pos">▲ +1</div>
+          </article>
+          <article class="card kpi-tile" data-od-id="kpi-avg-order">
+            <div class="kpi-label">Ø Auftragswert</div>
+            <div class="kpi-value" id="kpi-avg">—</div>
+            <div class="kpi-delta neg">▼ −1,2 %</div>
+          </article>
+        </section>
+
+        <section class="card" aria-label="Umsatzverlauf" data-od-id="revenue-chart-card">
+          <div class="card-head">
+            <h2 class="card-title" data-od-id="chart-title">Umsatzverlauf</h2>
+            <span class="section-link" style="color: var(--color-fg-muted); font-size: var(--size-sm);">Umsatz pro Monat, letzte 8 Monate</span>
+          </div>
+          <div class="chart-wrap" id="revenue-chart" style="margin-top: var(--space-3);">
+            <svg class="chart-svg" id="revenue-chart-svg" role="img" aria-label="Umsatzverlauf über acht Monate, von März bis Oktober 2026"></svg>
+            <div class="chart-tooltip" id="revenue-tooltip" hidden></div>
+          </div>
+        </section>
+
+        <section class="section" aria-label="Letzte Aktivitäten" data-od-id="activities-section">
+          <div class="section-head">
+            <h2 class="section-title" data-od-id="activities-title">Letzte Aktivitäten</h2>
+            <a class="section-link" href="customers.html" data-od-id="view-all-customers">Alle Kunden ansehen →</a>
+          </div>
+          <div class="card">
+            <ul class="list" id="activity-list"></ul>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    (function () {
+      var BH = window.BH;
+
+      var totalRevenue = 0;
+      var activeCount = 0;
+      var openOrders = 0;
+      var orderAmount = 0;
+      var orderCount = 0;
+      BH.customers.forEach(function (c) {
+        totalRevenue += c.revenue;
+        if (c.status === "aktiv") { activeCount++; }
+        (c.orders || []).forEach(function (o) {
+          if (o.status === "pending") { openOrders++; }
+          if (o.status !== "cancelled") { orderAmount += o.amount; orderCount++; }
+        });
+      });
+      var avgOrder = orderCount ? orderAmount / orderCount : 0;
+
+      document.getElementById("kpi-revenue").textContent = BH.formatMoney(totalRevenue);
+      document.getElementById("kpi-open").textContent = openOrders;
+      document.getElementById("kpi-active").textContent = activeCount;
+      document.getElementById("kpi-avg").textContent = BH.formatMoney(avgOrder);
+
+      var list = document.getElementById("activity-list");
+      var frag = document.createDocumentFragment();
+      BH.activities.forEach(function (a) {
+        var row = document.createElement("a");
+        row.className = "list-row";
+        row.href = "customer-detail.html?id=" + a.customerId;
+        row.setAttribute("data-od-id", "activity-row-" + a.customerId);
+
+        var d = document.createElement("span");
+        d.className = "list-date";
+        d.textContent = BH.formatDate(a.date);
+        row.appendChild(d);
+
+        var n = document.createElement("span");
+        n.className = "list-name";
+        n.textContent = a.customerName;
+        row.appendChild(n);
+
+        var t = document.createElement("span");
+        t.className = "list-text";
+        t.textContent = a.text;
+        t.title = a.text;
+        row.appendChild(t);
+
+        var chev = document.createElement("span");
+        chev.className = "list-chevron";
+        chev.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        row.appendChild(chev);
+
+        frag.appendChild(row);
+      });
+      list.appendChild(frag);
+
+      drawChart();
+    })();
+
+    function drawChart() {
+      var wrap = document.getElementById("revenue-chart");
+      var svg = document.getElementById("revenue-chart-svg");
+      var tooltip = document.getElementById("revenue-tooltip");
+      var data = BH.revenueByMonth;
+
+      var W = wrap.clientWidth || 800;
+      var H = wrap.clientHeight || 320;
+      svg.setAttribute("width", W);
+      svg.setAttribute("height", H);
+      svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+
+      var margin = { top: 16, right: 12, bottom: 34, left: 64 };
+      var pw = W - margin.left - margin.right;
+      var ph = H - margin.top - margin.bottom;
+      if (pw <= 0 || ph <= 0) { return; }
+
+      var values = data.map(function (d) { return d.value; });
+      var min = Math.min.apply(null, values);
+      var max = Math.max.apply(null, values);
+      var span = (max - min) || max || 1;
+      var y0 = Math.max(0, min - span * 0.15);
+      var y1 = max + span * 0.15;
+      var n = data.length;
+
+      function xAt(i) { return margin.left + pw * i / (n - 1); }
+      function yAt(v) { return margin.top + ph * (1 - (v - y0) / (y1 - y0)); }
+
+      var NS = "http://www.w3.org/2000/svg";
+      function el(tag, attrs) {
+        var e = document.createElementNS(NS, tag);
+        for (var k in attrs) { e.setAttribute(k, attrs[k]); }
+        return e;
+      }
+
+      var frag = document.createDocumentFragment();
+      var baseline = margin.top + ph;
+      var ticks = 4;
+      for (var t = 0; t <= ticks; t++) {
+        var v = y0 + (y1 - y0) * t / ticks;
+        var yy = yAt(v);
+        frag.appendChild(el("line", { x1: margin.left, y1: yy, x2: margin.left + pw, y2: yy, "class": "chart-grid" }));
+        var lbl = el("text", { x: margin.left - 8, y: yy + 4, "text-anchor": "end", "class": "chart-label" });
+        lbl.textContent = BH.compactMoney(Math.round(v));
+        frag.appendChild(lbl);
+      }
+
+      frag.appendChild(el("line", { x1: margin.left, y1: margin.top, x2: margin.left, y2: baseline, "class": "chart-axis" }));
+      frag.appendChild(el("line", { x1: margin.left, y1: baseline, x2: margin.left + pw, y2: baseline, "class": "chart-axis" }));
+
+      var lineD = "";
+      var areaD = "";
+      for (var i = 0; i < n; i++) {
+        var px = xAt(i);
+        var py = yAt(values[i]);
+        lineD += (i === 0 ? "M" : "L") + px.toFixed(1) + " " + py.toFixed(1);
+        areaD += (i === 0 ? "M" : "L") + px.toFixed(1) + " " + py.toFixed(1);
+      }
+      areaD += "L" + xAt(n - 1).toFixed(1) + " " + baseline + "L" + xAt(0).toFixed(1) + " " + baseline + "Z";
+
+      frag.appendChild(el("path", { d: areaD, "class": "chart-area" }));
+      frag.appendChild(el("path", { d: lineD, "class": "chart-line" }));
+
+      for (var j = 0; j < n; j++) {
+        var lx = xAt(j);
+        var ly = yAt(values[j]);
+
+        var xlbl = el("text", { x: lx, y: baseline + 18, "text-anchor": "middle", "class": "chart-label" });
+        xlbl.textContent = BH.formatMonth(data[j].ym);
+        frag.appendChild(xlbl);
+
+        var dot = el("circle", { cx: lx, cy: ly, r: 4, "class": "chart-dot" });
+        dot.setAttribute("tabindex", "-1");
+        (function (idx, dx, dy) {
+          dot.addEventListener("mouseenter", function () {
+            tooltip.innerHTML = '<div class="tt-value">' + BH.formatMoney(data[idx].value) + '</div><div class="tt-date">' + BH.formatMonth(data[idx].ym) + '</div>';
+            tooltip.hidden = false;
+            positionTooltip(dx, dy);
+          });
+          dot.addEventListener("mouseleave", function () { tooltip.hidden = true; });
+        })(j, lx, ly);
+        frag.appendChild(dot);
+      }
+
+      svg.innerHTML = "";
+      svg.appendChild(frag);
+
+      function positionTooltip(dx, dy) {
+        var tw = tooltip.offsetWidth;
+        var th = tooltip.offsetHeight;
+        var left = dx + 12;
+        var top = dy - th - 12;
+        if (left + tw > W) { left = dx - tw - 12; }
+        if (top < 0) { top = dy + 12; }
+        tooltip.style.left = left + "px";
+        tooltip.style.top = top + "px";
+      }
+    }
+
+    var topbar = document.querySelector(".topbar");
+    function onScroll() { topbar.classList.toggle("is-scrolled", window.scrollY > 0); }
+    window.addEventListener("scroll", onScroll);
+    onScroll();
+
+    var resizeTimer;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(drawChart, 150);
+    });
+  </script>
+</body>
+</html>
