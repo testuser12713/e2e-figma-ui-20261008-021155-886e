@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
@@ -21,11 +21,14 @@ describe('CustomerDetail', () => {
 
     expect(screen.getByRole('heading', { name: 'Kundendetail' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Anna Müller' })).toBeInTheDocument()
-    expect(screen.getByText('Müller GmbH')).toBeInTheDocument()
-    expect(screen.getByText('anna.mueller@mueller-gmbh.de')).toBeInTheDocument()
-    expect(screen.getByText('+49 30 1234567')).toBeInTheDocument()
-    expect(screen.getByText('Berlin')).toBeInTheDocument()
-    expect(screen.getByText('Aktiv')).toBeInTheDocument()
+
+    // The overview panel shows the same master data, so scope these to the header.
+    const header = screen.getByRole('region', { name: 'Kundenkopf' })
+    expect(within(header).getByText('Müller GmbH')).toBeInTheDocument()
+    expect(within(header).getByText('anna.mueller@mueller-gmbh.de')).toBeInTheDocument()
+    expect(within(header).getByText('+49 30 1234567')).toBeInTheDocument()
+    expect(within(header).getByText('Berlin')).toBeInTheDocument()
+    expect(within(header).getByText('Aktiv')).toBeInTheDocument()
 
     expect(screen.getByRole('tab', { name: 'Übersicht' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Aufträge' })).toBeInTheDocument()
