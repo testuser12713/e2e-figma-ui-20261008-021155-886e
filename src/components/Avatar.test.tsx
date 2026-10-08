@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import Avatar from './Avatar'
+import CustomerDetailHeader from './detail/CustomerDetailHeader'
+import { customers } from '../data/customers'
 import styles from './Avatar.module.css'
 import cssSource from './Avatar.module.css?raw'
 
@@ -41,5 +43,14 @@ describe('Avatar', () => {
     expect(cssSource).toMatch(
       /\.header\s*\{[^}]*border-radius:\s*var\(--radius-lg\)/s,
     )
+  })
+
+  it('renders the large header variant in the customer detail header', () => {
+    const customer = customers[0]
+    render(<CustomerDetailHeader customer={customer} />)
+
+    const avatar = screen.getByRole('img', { name: `Avatar von ${customer.name}` })
+    expect(avatar).toHaveClass(styles.header)
+    expect(avatar).not.toHaveClass(styles.table)
   })
 })
