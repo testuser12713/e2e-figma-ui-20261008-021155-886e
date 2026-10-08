@@ -9,5 +9,8 @@ export default defineConfig({
     setupFiles: './src/setupTests.ts',
     css: true,
     globals: false,
+    // Only the unit/component tests under src/ belong to Vitest.
+    // The office-owned Playwright smoke spec in e2e/ must not be collected here.
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
   },
 })
