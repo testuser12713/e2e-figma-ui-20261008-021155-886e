@@ -2,12 +2,25 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  color: var(--avatar-fg);
+  font-weight: var(--heading-weight);
+  line-height: 1;
+  flex: 0 0 auto;
+  user-select: none;
+}
+
+/* 32px table variant: round, 12px initials */
+.table {
   width: 32px;
   height: 32px;
   border-radius: var(--radius-pill);
-  color: var(--avatar-fg);
   font-size: var(--size-xs);
-  font-weight: var(--heading-weight);
-  flex: 0 0 auto;
-  user-select: none;
+}
+
+/* 56px customer header variant: rounded card corners, 20px initials */
+.header {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  font-size: var(--size-lg);
 }

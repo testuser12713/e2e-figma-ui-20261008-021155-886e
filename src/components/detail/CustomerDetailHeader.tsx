@@ -68,7 +68,7 @@ function PinIcon() {
 export default function CustomerDetailHeader({ customer }: CustomerDetailHeaderProps) {
   return (
     <section className={styles.header} aria-label="Kundenkopf">
-      <Avatar name={customer.name} />
+      <Avatar name={customer.name} size="header" />
       <div className={styles.identity}>
         <h2 className={styles.name}>{customer.name}</h2>
         <p className={styles.company}>{customer.company}</p>

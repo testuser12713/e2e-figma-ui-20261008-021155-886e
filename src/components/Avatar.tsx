@@ -1,7 +1,10 @@
 import styles from './Avatar.module.css'
 
-interface AvatarProps {
+export type AvatarSize = 'table' | 'header'
+
+export interface AvatarProps {
   name: string
+  size?: AvatarSize
 }
 
 function initials(name: string): string {
@@ -23,16 +26,29 @@ function paletteIndex(name: string): number {
   return Math.abs(hash)
 }
 
-export default function Avatar({ name }: AvatarProps) {
+export default function Avatar({ name, size = 'table' }: AvatarProps) {
   const index = paletteIndex(name) + 1
+  const className = `${styles.avatar} ${
+    size === 'header' ? styles.header : styles.table
+  }`
+  const style = { background: `var(--avatar-bg-${index})` }
+
+  if (size === 'header') {
+    return (
+      <span
+        className={className}
+        style={style}
+        role="img"
+        aria-label={`Avatar von ${name}`}
+      >
+        <span aria-hidden="true">{initials(name)}</span>
+      </span>
+    )
+  }
+
   return (
-    <span
-      className={styles.avatar}
-      style={{ background: `var(--avatar-bg-${index})` }}
-      role="img"
-      aria-label={`Avatar von ${name}`}
-    >
-      <span aria-hidden="true">{initials(name)}</span>
+    <span className={className} style={style} aria-hidden="true">
+      {initials(name)}
     </span>
   )
 }
