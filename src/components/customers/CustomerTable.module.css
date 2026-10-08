@@ -1,0 +1,95 @@
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead th {
+  background: var(--color-surface-sunken);
+  height: 40px;
+  padding: 0 var(--space-3);
+  font-size: var(--size-xs);
+  font-weight: var(--label-weight);
+  color: var(--color-fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table thead th.numeric,
+.table thead th.right {
+  text-align: right;
+}
+
+.numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.right {
+  text-align: right;
+}
+
+.table tbody td {
+  height: 52px;
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--color-surface-sunken);
+  font-size: var(--size-sm);
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.row {
+  cursor: pointer;
+}
+
+.row:hover {
+  background: color-mix(in srgb, var(--color-accent-soft) 40%, transparent);
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+.cellName {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.nameWrap {
+  min-width: 0;
+}
+
+.name {
+  font-size: var(--size-base);
+  font-weight: var(--label-weight);
+  color: var(--color-fg);
+  line-height: var(--line-tight);
+}
+
+.clientId {
+  font-size: var(--size-xs);
+  color: var(--color-fg-subtle);
+}
+
+.muted {
+  color: var(--color-fg-muted);
+}
+
+@media (max-width: 1100px) {
+  .colCity {
+    display: none;
+  }
+}
