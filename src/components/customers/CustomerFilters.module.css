@@ -1,0 +1,128 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.searchWrap {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--color-fg-subtle);
+  pointer-events: none;
+}
+
+.searchInput {
+  height: 44px;
+  padding: 0 var(--space-2) 0 36px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--size-base);
+  color: var(--color-fg);
+  min-width: 260px;
+}
+
+.searchInput::placeholder {
+  color: var(--color-fg-subtle);
+}
+
+.searchInput:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-color: var(--color-accent);
+}
+
+.segmented {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  height: 36px;
+}
+
+.segment {
+  height: 30px;
+  padding: 0 var(--space-2);
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: var(--size-sm);
+  font-weight: var(--label-weight);
+  color: var(--color-fg-muted);
+  cursor: pointer;
+}
+
+.segment:hover {
+  color: var(--color-fg);
+}
+
+.segment:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+.segmentActive {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-accent);
+}
+
+.reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--size-base);
+  font-weight: var(--label-weight);
+  color: var(--color-fg-muted);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.reset:hover:not(:disabled) {
+  background: var(--color-surface-sunken);
+  color: var(--color-fg);
+}
+
+.reset:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.summary {
+  font-size: var(--size-sm);
+  color: var(--color-fg-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .searchInput {
+    min-width: 200px;
+  }
+}
